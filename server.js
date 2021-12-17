@@ -10,11 +10,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
+function filterByQuery(query, notesArray) {
+    let filteredResults = notesArray;
+    if (query.id) {
+      filteredResults = filteredResults.filter(note => note.id === query.id);
+    }
+    if (query.title) {
+      filteredResults = filteredResults.filter(note => note.title === query.title);
+    }
+    if (query.text) {
+      filteredResults = filteredResults.filter(note => note.text === query.text);
+    }
+    return filteredResults;
+  }
+
 // API notes route
 app.get('/api/notes', (req, res) => {
     // res.send('Hello!');
-    res.json(db.notes);
-    console.log(db.notes);
+    let results = db.notes;
+    console.log(req.query);
+    if (req.query) {
+        results = filterByQuery(req.query, results);
+    }
+    res.json(results);
 });
 
 app.listen(PORT, () => {
