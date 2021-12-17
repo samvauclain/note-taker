@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-
+const fs = require('fs')
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -27,6 +27,40 @@ app.get('/api/notes/:id', (req, res) => {
 function findById(id, notesArray) {
     const result = notesArray.filter(note => note.id === id)[0];
     return result;
+}
+
+function createNewNote(body, notesArray) {
+    const note = body
+    notesArray.push(note)
+    fs.writeFileSync(
+        path.join(__dirname, './db/db.json'),
+        JSON.stringify({ notes: notesArray }, null, 2)
+    )
+    return note
+}
+
+app.post('/api/notes', (req, res) => {
+    // Increment ID based on array length
+    req.body.id = notes.length.toString();
+
+    // make sure they're entering values, if not, send 400 error back
+    if (!validateNote(req.body)) {
+        res.status(400).send('The note needs text.');
+    } 
+    else {
+        const note = createNewNote(req.body, notes);
+        res.json(note);
+    }
+})
+
+function validateNote(note) {
+    if (!note.title || typeof note.title !== 'string') {
+      return false;
+    }
+    if (!note.text || typeof note.text !== 'string') {
+      return false;
+    }
+    return true;
   }
 
 app.listen(PORT, () => {

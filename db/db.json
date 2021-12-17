@@ -1,15 +1,14 @@
 {
-"notes":
-    [
-        {
-            "id":"1",
-            "title":"Test Title",
-            "text":"Test text"
-        },
-        {
-            "id":"2",
-            "title":"Test 2",
-            "text":"Test 2"
-        }
-    ]
+  "notes": [
+    {
+      "title": "Test 0",
+      "text": "Test 0",
+      "id": "0"
+    },
+    {
+      "title": "Test 1",
+      "text": "Test 1",
+      "id": "1"
+    }
+  ]
 }
