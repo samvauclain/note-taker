@@ -40,28 +40,34 @@ function createNewNote(body, notesArray) {
 }
 
 app.post('/api/notes', (req, res) => {
+    console.log(req.body)
     // Increment ID based on array length
     req.body.id = notes.length.toString();
 
-    // make sure they're entering values, if not, send 400 error back
-    if (!validateNote(req.body)) {
-        res.status(400).send('The note needs text.');
-    } 
-    else {
-        const note = createNewNote(req.body, notes);
-        res.json(note);
-    }
+    const note = createNewNote(req.body, notes);
+    res.json(note);
 })
 
-function validateNote(note) {
-    if (!note.title || typeof note.title !== 'string') {
-      return false;
-    }
-    if (!note.text || typeof note.text !== 'string') {
-      return false;
-    }
-    return true;
-  }
+// rework and try to refresh page
+app.delete('/api/notes/:id', (req, res) => {
+    const updateArray = notes.filter(({ id }) => id !== req.params.id)
+    console.log(updateArray)
+    fs.writeFileSync(
+        path.join(__dirname, './db/db.json'),
+        JSON.stringify({ notes: updateArray}, null, 2)
+    )
+    res.json({ok: true})
+})
+
+// Route for index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'))
+})
+
+// route for notes.html
+app.get('/notes', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/notes.html'))
+})
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
