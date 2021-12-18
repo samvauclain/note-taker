@@ -4,7 +4,7 @@ const fs = require('fs')
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-const { notes }  = require('./db/db.json');
+const { notes } = require('./db/db.json');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -20,8 +20,10 @@ app.get('/api/notes', (req, res) => {
 });
 
 app.get('/api/notes/:id', (req, res) => {
+    // notes = JSON.parse(fs.readFileSync('db/db.json', 'utf-8'));
+
     const result = findById(req.params.id, notes);
-      res.json(result);
+    res.json(result);
   });
 
 function findById(id, notesArray) {
@@ -66,6 +68,7 @@ app.get('/', (req, res) => {
 
 // route for notes.html
 app.get('/notes', (req, res) => {
+    //const notes = JSON.parse(fs.readFileSync('db/db.json', 'utf-8'));
     res.sendFile(path.join(__dirname, './public/notes.html'))
 })
 
